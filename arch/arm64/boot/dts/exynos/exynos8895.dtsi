@@ -109,6 +109,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x100>;
 			enable-method = "psci";
+			cpu-idle-states = <&CLUSTER0_CPU_SLEEP>;
 		};
 
 		cpu1: cpu@101 {
@@ -116,6 +117,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x101>;
 			enable-method = "psci";
+			cpu-idle-states = <&CLUSTER0_CPU_SLEEP>;
 		};
 
 		cpu2: cpu@102 {
@@ -123,6 +125,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x102>;
 			enable-method = "psci";
+			cpu-idle-states = <&CLUSTER0_CPU_SLEEP>;
 		};
 
 		cpu3: cpu@103 {
@@ -130,6 +133,20 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x103>;
 			enable-method = "psci";
+			cpu-idle-states = <&CLUSTER0_CPU_SLEEP>;
+		};
+
+		idle-states {
+			entry-method = "psci";
+
+			CLUSTER0_CPU_SLEEP: cpu-cluster0-sleep {
+				compatible = "arm,idle-state";
+				idle-state-name = "c2";
+				arm,psci-suspend-param = <0x0010000>;
+				entry-latency-us = <35>;
+				exit-latency-us = <90>;
+				min-residency-us = <750>;
+			};
 		};
 	};
 
