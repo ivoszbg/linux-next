@@ -237,6 +237,12 @@
 				      "usi01", "usi02", "usi03";
 		};
 
+		sysreg_peric0: syscon@10420000 {
+			compatible = "samsung,exynos8895-peric0-sysreg", "syscon";
+			reg = <0x10420000 0x10000>;
+			clocks = <&cmu_peric0 CLK_GOUT_PERIC0_SYSREG_PERIC0_PCLK>;
+		};
+
 		/* UART_DBG */
 		serial_0: serial@10430000 {
 			compatible = "samsung,exynos8895-uart";
@@ -298,6 +304,12 @@
 				      "usi10", "usi11", "usi12", "usi13";
 		};
 
+		sysreg_peric1: syscon@10820000 {
+			compatible = "samsung,exynos8895-peric1-sysreg", "syscon";
+			reg = <0x10820000 0x10000>;
+			clocks = <&cmu_peric1 CLK_GOUT_PERIC1_SYSREG_PERIC1_PCLK>;
+		};
+
 		pinctrl_peric1: pinctrl@10980000 {
 			compatible = "samsung,exynos8895-pinctrl";
 			reg = <0x10980000 0x1000>;
@@ -320,6 +332,12 @@
 				      "ufs_embd", "usbdrd30";
 		};
 
+		sysreg_fsys0: syscon@11020000 {
+			compatible = "samsung,exynos8895-fsys0-sysreg", "syscon";
+			reg = <0x11020000 0x1200>;
+			clocks = <&cmu_fsys0 CLK_GOUT_FSYS0_SYSREG_FSYS0_PCLK>;
+		};
+
 		pinctrl_fsys0: pinctrl@11050000 {
 			compatible = "samsung,exynos8895-pinctrl";
 			reg = <0x11050000 0x1000>;
@@ -338,6 +356,12 @@
 				 <&cmu_top CLK_DOUT_CMU_FSYS1_UFS_CARD>;
 			clock-names = "oscclk", "bus", "mmc_card",
 				      "pcie", "ufs_card";
+		};
+
+		sysreg_fsys1: syscon@11420000 {
+			compatible = "samsung,exynos8895-fsys1-sysreg", "syscon";
+			reg = <0x11420000 0x1200>;
+			clocks = <&cmu_fsys1 CLK_GOUT_FSYS1_SYSREG_FSYS1_PCLK>;
 		};
 
 		pinctrl_fsys1: pinctrl@11430000 {
