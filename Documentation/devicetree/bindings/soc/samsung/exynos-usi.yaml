@@ -11,11 +11,17 @@ maintainers:
   - Krzysztof Kozlowski <krzk@kernel.org>
 
 description: |
-  USI IP-core provides selectable serial protocol (UART, SPI or High-Speed I2C).
-  USI shares almost all internal circuits within each protocol, so only one
-  protocol can be chosen at a time. USI is modeled as a node with zero or more
-  child nodes, each representing a serial sub-node device. The mode setting
-  selects which particular function will be used.
+  USI IP-core provides selectable configurations that choose which serial
+  protocols will be used.
+  USI shares almost all internal circuits within each protocol. Only one
+  configuration can be chosen at a time, which could either allow two serial
+  protocols if USIv1 or one if USIv2.
+  USIv1 allows selecting High-Speed I2C0, High-Speed I2C1, High-Speed I2C0
+  and I2C1, SPI, UART or UART and High-Speed I2C1.
+  USIv2 allows selecting UART, SPI or High-Speed I2C.
+  USI is modeled as a node with zero or more child nodes, each representing
+  a serial sub-node device. The mode setting selects which particular function
+  will be used.
 
 properties:
   $nodename:
@@ -31,6 +37,7 @@ properties:
           - const: samsung,exynos850-usi
       - enum:
           - samsung,exynos850-usi
+          - samsung,exynos8895-usi
 
   reg:
     maxItems: 1
@@ -106,6 +113,7 @@ if:
       contains:
         enum:
           - samsung,exynos850-usi
+          - samsung,exynos8895-usi
 
 then:
   properties:
