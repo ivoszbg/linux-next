@@ -232,6 +232,59 @@ int mtk_hw_get_value(struct mtk_pinctrl *hw, const struct mtk_pin_desc *desc,
 }
 EXPORT_SYMBOL_GPL(mtk_hw_get_value);
 
+static void mtk_eh_ctrl(struct mtk_pinctrl *hw, const struct mtk_pin_desc *desc,
+		 u16 mode)
+{
+	const struct mtk_eh_pin_pinmux *p = hw->soc->eh_pin_pinmux;
+	u32 val = 0, on = 0;
+
+	while (p->pin != 0xffff) {
+		if (desc->number == p->pin) {
+			if (mode == p->pinmux) {
+				on = 1;
+				break;
+			} else if (desc->number != (p + 1)->pin) {
+				/*
+				 * If the target mode does not match
+				 * the mode in current entry.
+				 *
+				 * Check the next entry if the pin
+				 * number is the same.
+				 * Yes: target pin have more than one
+				 *    pinmux shall enable eh. Check the
+				 *    next entry.
+				 * No: target pin do not have other
+				 *    pinmux shall enable eh. Just disable
+				 *    the EH function.
+				 */
+				break;
+			}
+		}
+		/* It is possible that one pin may have more than one pinmux
+		 *   that shall enable eh.
+		 * Besides, we assume that hw->soc->eh_pin_pinmux is sorted
+		 *   according to field 'pin'.
+		 * So when desc->number < p->pin, it mean no match will be
+		 *   found and we can leave.
+		 */
+		if (desc->number < p->pin)
+			return;
+
+		p++;
+	}
+
+	/* If pin not found, just return */
+	if (p->pin == 0xffff)
+		return;
+
+	(void)mtk_hw_get_value(hw, desc, PINCTRL_PIN_REG_DRV_EH, &val);
+	if (on)
+		val |= on;
+	else
+		val &= 0xfffffffe;
+	(void)mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DRV_EH, val);
+}
+
 static int mtk_xt_find_eint_num(struct mtk_pinctrl *hw, unsigned long eint_n)
 {
 	const struct mtk_pin_desc *desc;
@@ -340,6 +393,9 @@ static int mtk_xt_set_gpio_as_eint(void *data, unsigned long eint_n)
 			       desc->eint.eint_m);
 	if (err)
 		return err;
+
+	if (hw->soc->eh_pin_pinmux)
+		mtk_eh_ctrl(hw, desc, desc->eint.eint_m);
 
 	err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DIR, MTK_INPUT);
 	if (err)
